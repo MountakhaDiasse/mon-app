@@ -5,7 +5,6 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
         IMAGE_NAME = "mountakhadiasse/mon-app"
         IMAGE_TAG  = "v${BUILD_NUMBER}"
-        KUBECONFIG_CRED = 'kubeconfig-demo'
     }
 
     stages {
@@ -37,17 +36,17 @@ pipeline {
 
         stage('Déploiement Kubernetes') {
             steps {
-                withKubeConfig([credentialsId: "${KUBECONFIG_CRED}"]) {
-                    sh "kubectl set image deployment/mon-app mon-app=${IMAGE_NAME}:${IMAGE_TAG} --record=false"
-                    sh "kubectl rollout status deployment/mon-app"
+                withCredentials([file(credentialsId: 'kubeconfig-demo', variable: 'KUBECONFIG_FILE')]) {
+                    sh 'kubectl --kubeconfig=$KUBECONFIG_FILE set image deployment/mon-app mon-app=${IMAGE_NAME}:${IMAGE_TAG}'
+                    sh 'kubectl --kubeconfig=$KUBECONFIG_FILE rollout status deployment/mon-app'
                 }
             }
         }
 
         stage('Vérification') {
             steps {
-                withKubeConfig([credentialsId: "${KUBECONFIG_CRED}"]) {
-                    sh "kubectl get pods"
+                withCredentials([file(credentialsId: 'kubeconfig-demo', variable: 'KUBECONFIG_FILE')]) {
+                    sh 'kubectl --kubeconfig=$KUBECONFIG_FILE get pods'
                 }
             }
         }
