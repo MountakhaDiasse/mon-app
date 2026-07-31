@@ -9,8 +9,8 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.json({
     application: 'Pipeline CI/CD Kubernetes',
-    message: 'Bienvenue Professeur ! Le pipeline CI/CD fonctionne correctement.',
-    version: process.env.APP_VERSION || 'v2',
+    message: 'Bienvenue Professeur et la classe ! Le pipeline CI/CD fonctionne correctement.',
+    version: process.env.APP_VERSION || 'v8',
     status: 'Running'
   });
 });
